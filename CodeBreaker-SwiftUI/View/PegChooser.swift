@@ -1,0 +1,37 @@
+//
+//  PegChooser.swift
+//  CodeBreaker-SwiftUI
+//
+//  Created by Thiha Ye Yint Aung on 1/26/26.
+//
+
+import SwiftUI
+
+struct PegChooser: View {
+    // MARK: Data In
+    let choices: [Peg]
+    
+    // MARK: Data Out Function
+    let onChoose: ((Peg) -> Void)?
+    
+    // MARK: - Body
+    
+    var body: some View {
+        HStack {
+            ForEach(choices, id: \.self) { peg in
+                Button {
+                    onChoose?(peg)
+                } label: {
+                    PegView(peg: peg)
+                }
+            }
+        }
+    }
+}
+
+#Preview {
+    PegChooser(choices: [Color.red, .blue, .green, .yellow]) { peg in
+        print("chose \(peg)")
+    }
+    .padding()
+}
