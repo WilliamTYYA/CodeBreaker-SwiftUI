@@ -5,10 +5,7 @@
 //  Created by Thiha Ye Yint Aung on 1/25/26.
 //
 
-import Foundation
 import SwiftUI
-
-typealias Peg = Color
 
 struct Code {
     var kind: Kind
