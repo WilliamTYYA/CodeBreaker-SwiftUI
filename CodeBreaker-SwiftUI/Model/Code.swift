@@ -13,7 +13,7 @@ struct Code {
     
     static let missingPeg: Peg = .clear
     
-    enum Kind {
+    enum Kind: Equatable {
         case master(isHidden: Bool)
         case guess
         case attempt([Match])
