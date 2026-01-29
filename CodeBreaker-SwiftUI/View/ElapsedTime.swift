@@ -9,14 +9,24 @@
 import SwiftUI
 
 //struct ElapsedTime: View {
-//    let startTime: Date
+//    // MARK: Data In
+//    let startTime: Date?
 //    let endTime: Date?
+//    let elapsedTime: TimeInterval
+//    
+//    var format: SystemFormatStyle.DateOffset {
+//        .offset(to: startTime! - elapsedTime, allowedFields: [.minute, .second])
+//    }
 //    
 //    var body: some View {
-//        if let endTime {
-//            Text(endTime, format: .offset(to: startTime, allowedFields: [.minute, .second]))
+//        if startTime != nil {
+//            if let endTime {
+//                Text(endTime, format: format)
+//            } else {
+//                Text(TimeDataSource<Date>.currentDate, format: format)
+//            }
 //        } else {
-//            Text(TimeDataSource<Date>.currentDate, format: .offset(to: startTime, allowedFields: [.minute, .second]))
+//            Image(systemName: "pause")
 //        }
 //    }
 //}
@@ -24,18 +34,27 @@ import SwiftUI
 import SwiftUI
 
 struct ElapsedTime: View {
-    let startTime: Date
+    let startTime: Date?
     let endTime: Date?
+    let elapsedTime: TimeInterval
+    
+    var format: SystemFormatStyle.DateOffset {
+        .offset(to: startTime! - elapsedTime, allowedFields: [.minute, .second])
+    }
     
     var body: some View {
-        if let endTime {
-            Text(endTime, format: .offset(to: startTime, allowedFields: [.minute, .second]))
+        if startTime != nil {
+            if let endTime {
+                Text(endTime, format: format)
+            } else {
+                Text(TimeDataSource<Date>.currentDate, format: format)
+            }
         } else {
-            Text(TimeDataSource<Date>.currentDate, format: .offset(to: startTime, allowedFields: [.minute, .second]))
+            Image(systemName: "pause")
         }
     }
 }
 
 #Preview {
-    ElapsedTime(startTime: Date.now, endTime: nil)
+    ElapsedTime(startTime: Date.now, endTime: nil, elapsedTime: 10)
 }
