@@ -8,9 +8,13 @@
 import SwiftUI
 
 struct CodeBreakerView: View {
-    // MARK: Data Owned by Me
-    @State private var game = CodeBreaker(pegChoices: [.brown, .yellow, .orange, .black, .green])
+    // MARK: Data In
+    @Environment(\.scenePhase) var scenePhase
     
+    // MARK: Data Shared with Me
+    let game: CodeBreaker
+    
+    // MARK: Data Owned by Me
     @State private var selection: Int = 0
     @State private var restarting = false
     @State private var hideMostRecentMarkers = false
@@ -22,7 +26,7 @@ struct CodeBreakerView: View {
             Button("Restart", systemImage: "arrow.circlepath", action: restart)
             
             CodeView(code: game.masterCode) {
-                ElapsedTime(startTime: game.startTime, endTime: game.endTime)
+                ElapsedTime(startTime: game.startTime, endTime: game.endTime, elapsedTime: game.elapsedTime)
                     .flexibleSystemFont()
                     .monospaced()
                     .lineLimit(1)
@@ -86,5 +90,8 @@ struct CodeBreakerView: View {
 }
 
 #Preview {
-    CodeBreakerView()
+    @Previewable @State var game = CodeBreaker(name: "Preview", pegChoices: [.blue,.red,.orange])
+    NavigationStack {
+        CodeBreakerView(game: game)
+    }
 }
