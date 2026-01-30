@@ -14,7 +14,7 @@ typealias Peg = Color
     var masterCode: Code = Code(kind: .master(isHidden: true))
     var guess: Code = Code(kind: .guess)
     var attempts: [Code] = []
-    let pegChoices: [Peg]
+    var pegChoices: [Peg]
     var startTime: Date?
     var endTime: Date?
     var elapsedTime: TimeInterval = 0
