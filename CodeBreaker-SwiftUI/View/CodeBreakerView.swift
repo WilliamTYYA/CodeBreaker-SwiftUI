@@ -23,28 +23,20 @@ struct CodeBreakerView: View {
     
     var body: some View {
         VStack {
-            Button("Restart", systemImage: "arrow.circlepath", action: restart)
-            
-            CodeView(code: game.masterCode) {
-                ElapsedTime(startTime: game.startTime, endTime: game.endTime, elapsedTime: game.elapsedTime)
-                    .flexibleSystemFont()
-                    .monospaced()
-                    .lineLimit(1)
-            }
+            CodeView(code: game.masterCode)
             ScrollView {
                 if !game.isOver {
                     CodeView(code: game.guess, selection: $selection) {
-                        Button("Guess", action: guess)
-                            .flexibleSystemFont()
+                        Button("Guess", action: guess).flexibleSystemFont()
                     }
                     .animation(nil, value: game.attempts.count)
                     .opacity(restarting ? 0 : 1)
                 }
-                ForEach(game.attempts.indices.reversed(), id: \.self) { index in
-                    CodeView(code: game.attempts[index]) {
-                        let showMarkers = !hideMostRecentMarkers || index != game.attempts.count - 1
+                ForEach(game.attempts, id: \.pegs) { attempt in
+                    CodeView(code: attempt) {
+                        let showMarkers = !hideMostRecentMarkers || attempt.pegs != game.attempts.first?.pegs
                         
-                        if showMarkers, let matches = game.attempts[index].matches {
+                        if showMarkers, let matches = attempt.matches {
                             MatchMarkers(matches: matches)
                         }
                     }
@@ -54,6 +46,18 @@ struct CodeBreakerView: View {
             if !game.isOver {
                 PegChooser(choices: game.pegChoices, onChoose: changePegAtSelection(to:))
                     .transition(.pegChooser)
+                    .frame(maxHeight: 90)
+            }
+        }
+        .trackElapsedTime(in: game)
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button("Restart", systemImage: "arrow.circlepath", action: restart)
+            }
+            ToolbarItem {
+                ElapsedTime(startTime: game.startTime, endTime: game.endTime, elapsedTime: game.elapsedTime)
+                    .monospaced()
+                    .lineLimit(1)
             }
         }
         .padding()
@@ -86,6 +90,38 @@ struct CodeBreakerView: View {
                 hideMostRecentMarkers = false
             }
         }
+    }
+}
+
+extension View {
+    func trackElapsedTime(in game: CodeBreaker) -> some View {
+        self.modifier(ElapsedTimeTracker(game: game))
+    }
+}
+
+struct ElapsedTimeTracker: ViewModifier {
+    @Environment(\.scenePhase) var scenePhase
+    let game: CodeBreaker
+    
+    func body(content: Content) -> some View {
+        content
+            .onAppear {
+                game.startTimer()
+            }
+            .onDisappear {
+                game.pauseTimer()
+            }
+            .onChange(of: game) { oldGame, newGame in
+                oldGame.pauseTimer()
+                newGame.startTimer()
+            }
+            .onChange(of: scenePhase) {
+                switch scenePhase {
+                case .active: game.startTimer()
+                case .background: game.pauseTimer()
+                default: break
+                }
+            }
     }
 }
 
