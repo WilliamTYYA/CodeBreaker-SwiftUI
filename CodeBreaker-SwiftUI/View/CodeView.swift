@@ -78,11 +78,11 @@ fileprivate struct Selection {
     static let shape = RoundedRectangle(cornerRadius: cornerRadius)
 }
 
-#Preview {
-    CodeView(code: Code(kind: .master(isHidden: true), pegs: [.yellow, .green, .blue, .purple]))
-}
-
-#Preview {
-    @Previewable @State var selection: Int = 1
-    CodeView(code: Code(kind: .guess, pegs: [.yellow, .green, .blue, .purple]), selection: $selection, ancillaryView: { MatchMarkers(matches: [.exact, .exact, .nomatch, .nomatch]) })
-}
+//#Preview {
+//    CodeView(code: Code(kind: .master(isHidden: true), pegs: [.yellow, .green, .blue, .purple]))
+//}
+//
+//#Preview {
+//    @Previewable @State var selection: Int = 1
+//    CodeView(code: Code(kind: .guess, pegs: [.yellow, .green, .blue, .purple]), selection: $selection, ancillaryView: { MatchMarkers(matches: [.exact, .exact, .nomatch, .nomatch]) })
+//}
