@@ -25,6 +25,7 @@ struct GameList: View {
         let capitalizedSearch = search.capitalized
         let completedOnly = sortBy == .completed
         let predicate = #Predicate<CodeBreaker> { game in
+//            (!completedOnly || game._attempts.contains { $0.pegs == game.masterCode.pegs }) &&
             (!completedOnly || game.isOver) &&
             (search.isEmpty || game.name.contains(lowercaseSearch) || game.name.contains(capitalizedSearch))
         }
