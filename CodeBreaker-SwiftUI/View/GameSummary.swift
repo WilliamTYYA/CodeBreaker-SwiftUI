@@ -9,13 +9,37 @@ import SwiftUI
 
 struct GameSummary: View {
     let game: CodeBreaker
+    var size: Size = .large
+    
+    enum Size {
+        case compact
+        case regular
+        case large
+        
+        var larger: Size {
+            switch self {
+            case .compact: return .regular
+            default: return .large
+            }
+        }
+        
+        var smaller: Size {
+            switch self {
+            case .large: return .regular
+            default: return .compact
+            }
+        }
+    }
     
     var body: some View {
-        VStack(alignment: .leading) {
-            Text(game.name).font(.title)
-            PegChooser(choices: game.pegChoices, onChoose: nil)
-                .frame(maxHeight: 50)
-            Text("^[\(game.attempts.count) attempt](inflect: true)")
+        let layout = size == .compact ? AnyLayout(HStackLayout()) : AnyLayout(VStackLayout(alignment: .leading))
+        layout {
+            Text(game.name).font(size == .compact ? .body : .title)
+            PegChooser(choices: game.pegChoices)
+                .frame(maxHeight: size == .compact ? 35 : 50)
+            if size == .large {
+                Text("^[\(game.attempts.count) attempt](inflect: true)")
+            }
         }
     }
 }
