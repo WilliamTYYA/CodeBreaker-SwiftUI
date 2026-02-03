@@ -10,6 +10,7 @@ import SwiftUI
 struct CodeBreakerView: View {
     // MARK: Data In
     @Environment(\.scenePhase) var scenePhase
+    @Environment(\.sceneFrame) var sceneFrame
     
     // MARK: Data Shared with Me
     let game: CodeBreaker
@@ -43,12 +44,18 @@ struct CodeBreakerView: View {
                     .transition(.attempt(game.isOver))
                 }
             }
-            if !game.isOver {
-                PegChooser(choices: game.pegChoices, onChoose: changePegAtSelection(to:))
-                    .transition(.pegChooser)
-                    .frame(maxHeight: 90)
+            GeometryReader { geometry in
+                if !game.isOver {
+                    let offset = sceneFrame.maxY - geometry.frame(in: .global).minY
+                    PegChooser(choices: game.pegChoices, onChoose: changePegAtSelection(to:))
+                        .transition(.offset(x: 0, y: offset))
+                        
+                }
             }
+            .aspectRatio(CGFloat(game.pegChoices.count), contentMode: .fit)
+            .frame(maxHeight: 90)
         }
+        .gesture(pegChoosingDial)
         .trackElapsedTime(in: game)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
@@ -61,6 +68,14 @@ struct CodeBreakerView: View {
             }
         }
         .padding()
+    }
+    
+    var pegChoosingDial: some Gesture {
+        RotateGesture()
+            .onChanged { value in
+                let pegChoiceIndex = Int(abs(value.rotation.degrees) / 90) % game.pegChoices.count
+                game.guess.pegs[selection] = game.pegChoices[pegChoiceIndex]
+            }
     }
     
     func changePegAtSelection(to peg: Peg) {
