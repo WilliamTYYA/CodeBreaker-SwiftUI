@@ -8,15 +8,18 @@
 import SwiftUI
 import SwiftData
 
-@Model class Code {
+@Model final class Code {
     var _kind: String = Kind.unknown.description
-    var pegs: [Peg]
+    var pegs: [Peg] = []
     var timestamp = Date.now
+    var game: CodeBreaker? // add this to let SwiftData save this as @Model instead of Codable
     
     var kind: Kind {
         get { return Kind(_kind) }
         set { _kind = newValue.description }
     }
+    
+    init() { }
     
     init(kind: Kind, pegs: [Peg] = Array(repeating: Code.missingPeg, count: 4)) {
         self.pegs = pegs
